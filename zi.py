@@ -25,7 +25,7 @@ def delete_identifiers_in_path(mypath, all):
             break
         elif all:
             for dirname in dirnames:
-                if dirname == "code" or dirname[0] == ".":
+                if dirname[0] == ".":
                     continue
                 counter += delete_identifiers_in_path(dirpath + "/" + dirname, all)
         break
