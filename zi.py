@@ -1,40 +1,47 @@
 import os
 
-path = os.getcwd()
-print("The current directory is " + path + ".")
-i = input("This directory or root? (Press ENTER for root or type 'curr' for the current dir.) ")
-if i == 'curr':
-    pass
-elif i == '':
-    path = '/home'
-else: exit(0)
-
 # Delete all Zone.Identifier files in directory and subdirectories.
-def delete_identifiers_in_path(mypath, all):
+def delete_identifiers_in_path(path, all):
     counter = 0
-    for (dirpath, dirnames, filenames) in os.walk(mypath):
+    for (dirpath, dirnames, filenames) in os.walk(path):
         for filename in filenames:
-            if len(filename) > 16 and filename[-16:] == ":Zone.Identifier":
-                if (os.path.exists(dirpath + "/" + filename)):
-                    os.remove(dirpath + "/" + filename)
+            if len(filename) > 16 and filename[-16:] == ':Zone.Identifier':
+                if (os.path.exists(dirpath + '/' + filename)):
+                    os.remove(dirpath + '/' + filename)
                     counter += 1
-                    print("Removed " + filename)
+                    print('Removed ' + filename)
                 else:
-                    print("File " + filename + " does not exist.")
+                    print('File ' + filename + ' does not exist.')
         if dirnames == []:
             break
         elif all:
             for dirname in dirnames:
-                if dirname[0] == ".":
+                if dirname[0] == '.':
                     continue
-                counter += delete_identifiers_in_path(dirpath + "/" + dirname, all)
+                counter += delete_identifiers_in_path(dirpath + '/' + dirname, all)
         break
     return counter
 
-c = input("Do you wish to also delete Zone.Identifier files in subdirectories? (Press ENTER or type 'y' for yes, or type 'n' for no.) ")
-if c == '' or c == 'y':
-    all = True
-elif c == 'n':
-    all = False
-else: exit(0)
-print(delete_identifiers_in_path(path, all))
+if __name__ == '__main__':
+    path = os.getcwd()
+
+    print('The current directory is ' + path + '.')
+    i = input('Begin in current or root directory? [ROOT/here] ')
+    if i.lower() == 'here':
+        pass
+    elif i == '' or i.lower() == 'root':
+        path = '/home'
+    else:
+        print('Invalid input. Aborting...')
+        exit(0)
+
+    c = input("Do you wish to also delete Zone.Identifier files in subdirectories? [Y/n] ")
+    if c == '' or c.lower() == 'y':
+        all = True
+    elif c.lower() == 'n':
+        all = False
+    else:
+        print('Invalid imput. Aborting...')
+        exit(0)
+
+    print(delete_identifiers_in_path(path, all))
